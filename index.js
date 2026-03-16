@@ -23,3 +23,10 @@ const Cliente = sequelize.define('Cliente', {
         type: DataTypes.STRING,
     }
 })
+
+//Congiguração do servidor Express
+const app = express()
+app.use(cors()) //Permite o Front-end acessar a API
+app.use(express.json()) //Permite o servidor entender requisições com JSON
+
+const PORT = 3001
