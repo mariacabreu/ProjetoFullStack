@@ -47,6 +47,46 @@ app.post('/clientes', async (req, res) => {
     }
 })
 
+app.put('/clientes/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const { nome, email, telefone } = req.body
+
+        const [updated] = await Cliente.update(
+            { nome, email, telefone },
+            { where: { id:  id } })
+
+        if (updated) {
+            const clienteAtualizado = await Cliente.findByPk(id)
+            return res.status(200).json({
+                message: 'Cliente atualizado com sucesso',
+                cliente: clienteAtualizado
+            })
+        }
+        return res.status(404).json({ message: 'Cliente não encontrado' })
+    }
+    catch (error) {
+        res.status(500).json({ error: "Erro ao atualizar cliente" })
+    }
+})
+
+app.delete('/clientes/:id', async (req, res) => {
+    try{
+        const { id } = req.params
+        const deletado = await Cliente.destroy({
+            where: { id: id }
+        })
+        if (deletado) {
+            return res.status(200).json({ message: 'Cliente deletado com sucesso' })
+        }
+
+        return res.status(404).json({ message: 'Cliente não encontrado' })
+    }
+    catch (error) {
+        res.status(500).json({ error: "Erro ao deletar cliente" })
+    }
+})
+
 //Iniciando o servidor
 sequelize.sync().then(() => {
     app.listen(PORT, () => {
